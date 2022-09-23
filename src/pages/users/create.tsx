@@ -3,6 +3,7 @@ import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from 
 import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
 import { Input } from '../../components/Form/Input';
+import Link from 'next/link';
 
 const CreateUser: NextPage = () => {
   return (
@@ -42,7 +43,9 @@ const CreateUser: NextPage = () => {
 
           <Flex mt="8" justify="flex-end">
             <HStack>
-              <Button colorScheme="whiteAlpha">Cancelar</Button>
+              <Link href="/users" passHref>
+                <Button as="a" colorScheme="whiteAlpha">Cancelar</Button>
+              </Link>
               <Button colorScheme="pink">Salvar</Button>
             </HStack>
           </Flex>
