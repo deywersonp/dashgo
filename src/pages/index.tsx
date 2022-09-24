@@ -10,12 +10,14 @@ type SignInFormData = {
 
 const Home: NextPage = () => {
   const { register, handleSubmit, formState } = useForm<SignInFormData>();
+  const { errors } = formState;
 
   const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     console.log(values);
   };
 
+  console.log(errors);
   return (
     <Flex
       w="100vw"
@@ -34,7 +36,14 @@ const Home: NextPage = () => {
         onSubmit={handleSubmit(handleSignIn)}
       >
         <Stack spacing="4">
-          <Input type="email" label="E-mail" {...register("email")} />
+          <Input
+            type="email"
+            label="E-mail"
+            error={errors.email}
+            {...register("email", {
+              required: 'Email obrigatório'
+            })}
+          />
           <Input type="password" label="Senha" {...register("password")} />
         </Stack>
 
