@@ -21,7 +21,7 @@ type ResponseData = {
 };
 
 const UsersList: NextPage = () => {
-  const { data, isLoading, error } = useQuery('users', async () => {
+  const { data, isLoading, isFetching, error } = useQuery('users', async () => {
     const response = await fetch('http://localhost:3000/api/users');
     const data: ResponseData = await response.json();
 
@@ -75,6 +75,7 @@ const UsersList: NextPage = () => {
               fontWeight="normal"
             >
               Usuários
+              {!isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4" />}
             </Heading>
 
             <Link href="/users/create" passHref>
