@@ -9,12 +9,34 @@ import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
 import { Pagination } from '../../components/Pagination';
 
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+};
+
+type ResponseData = {
+  users: User[];
+};
+
 const UsersList: NextPage = () => {
   const { data, isLoading, error } = useQuery('users', async () => {
     const response = await fetch('http://localhost:3000/api/users');
-    const data = await response.json();
+    const data: ResponseData = await response.json();
 
-    return data;
+    const users = data.users.map(user => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: new Date(user.createdAt).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      })
+    }));
+
+    return users;
   });
 
   const isWideVersion = useBreakpointValue({
@@ -88,81 +110,33 @@ const UsersList: NextPage = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  <Tr>
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="pink" />
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">Deywerson Pereira</Text>
-                        <Text fontSize="sm" color="gray.300">deywerson.pereira@gmail.com</Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td>21 de Setembro, 2022</Td>}
-                    {isWideVersion && (
-                      <Td>
-                        <Button
-                          as="a"
-                          size="sm"
-                          fontSize="sm"
-                          colorScheme="purple"
-                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                        >
-                          {isWideVersion ? 'Editar' : ''}
-                        </Button>
+                  {data?.map(user => (
+                    <Tr key={user.id}>
+                      <Td px={["4", "4", "6"]}>
+                        <Checkbox colorScheme="pink" />
                       </Td>
-                    )}
-                  </Tr>
-                  <Tr>
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="pink" />
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">Deywerson Pereira</Text>
-                        <Text fontSize="sm" color="gray.300">deywerson.pereira@gmail.com</Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td>21 de Setembro, 2022</Td>}
-                    {isWideVersion && (
                       <Td>
-                        <Button
-                          as="a"
-                          size="sm"
-                          fontSize="sm"
-                          colorScheme="purple"
-                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                        >
-                          {isWideVersion ? 'Editar' : ''}
-                        </Button>
+                        <Box>
+                          <Text fontWeight="bold">{user.name}</Text>
+                          <Text fontSize="sm" color="gray.300">{user.email}</Text>
+                        </Box>
                       </Td>
-                    )}
-                  </Tr>
-                  <Tr>
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="pink" />
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">Deywerson Pereira</Text>
-                        <Text fontSize="sm" color="gray.300">deywerson.pereira@gmail.com</Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td>21 de Setembro, 2022</Td>}
-                    {isWideVersion && (
-                      <Td>
-                        <Button
-                          as="a"
-                          size="sm"
-                          fontSize="sm"
-                          colorScheme="purple"
-                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                        >
-                          {isWideVersion ? 'Editar' : ''}
-                        </Button>
-                      </Td>
-                    )}
-                  </Tr>
+                      {isWideVersion && <Td>{user.createdAt}</Td>}
+                      {isWideVersion && (
+                        <Td>
+                          <Button
+                            as="a"
+                            size="sm"
+                            fontSize="sm"
+                            colorScheme="purple"
+                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                          >
+                            {isWideVersion ? 'Editar' : ''}
+                          </Button>
+                        </Td>
+                      )}
+                    </Tr>
+                  ))}
                 </Tbody>
               </Table>
 
