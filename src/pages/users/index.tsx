@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { Box, Button, Checkbox, Flex, Heading, Icon, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from '@chakra-ui/react';
@@ -9,9 +10,9 @@ import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
 import { Pagination } from '../../components/Pagination';
 
-
 const UsersList: NextPage = () => {
-  const { data, isLoading, isFetching, error } = useUsers();
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isFetching, error } = useUsers(page);
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -85,7 +86,7 @@ const UsersList: NextPage = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {data?.map(user => (
+                  {data?.users?.map(user => (
                     <Tr key={user.id}>
                       <Td px={["4", "4", "6"]}>
                         <Checkbox colorScheme="pink" />
@@ -116,9 +117,9 @@ const UsersList: NextPage = () => {
               </Table>
 
               <Pagination
-                totalCountOfRegisters={200}
-                currentPage={5}
-                onPageChange={() => {}}
+                totalCountOfRegisters={data?.totalCount || 0}
+                currentPage={page}
+                onPageChange={setPage}
               />
             </>
           )}
