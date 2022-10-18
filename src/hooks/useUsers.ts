@@ -39,7 +39,7 @@ export const getUsers = async (page: number): Promise<GetUsersResponse> => {
   };
 };
 
-export const useUsers = (page: number, options?: UseQueryOptions) => {
+export const useUsers = (page: number, options?: Omit<UseQueryOptions<unknown, unknown, unknown, (string | number)[]>, "queryKey" | "queryFn">) => {
   return useQuery(['users', page], () => getUsers(page), {
     staleTime: 1000 * 60 * 1, //10 minutos
     ...options
