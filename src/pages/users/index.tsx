@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
 import { Box, Button, Checkbox, Flex, Heading, Icon, Link, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from '@chakra-ui/react';
 import { RiAddLine, RiPencilLine } from 'react-icons/ri';
 
-import { useUsers } from '../../hooks/useUsers';
+import { getUsers, User, useUsers } from '../../hooks/useUsers';
 
 import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
@@ -12,9 +12,16 @@ import { Pagination } from '../../components/Pagination';
 import { queryClient } from '../../services/queryClient';
 import { api } from '../../services/api';
 
-const UsersList: NextPage = () => {
+interface Props {
+  users: User[];
+  totalCount: number;
+}
+
+const UsersList: NextPage<Props> = ({ users, totalCount }) => {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching, error } = useUsers(page);
+  const { data, isLoading, isFetching, error } = useUsers(page, {
+    initialData: { users, totalCount }
+  });
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -142,5 +149,16 @@ const UsersList: NextPage = () => {
     </Box>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { users, totalCount } = await getUsers(1);
+
+  return {
+    props: {
+      users,
+      totalCount,
+    }
+  }
+};
 
 export default UsersList;
