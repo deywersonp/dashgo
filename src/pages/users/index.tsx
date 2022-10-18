@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { NextPage } from 'next';
 import NextLink from 'next/link';
 import { Box, Button, Checkbox, Flex, Heading, Icon, Link, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from '@chakra-ui/react';
 import { RiAddLine, RiPencilLine } from 'react-icons/ri';
 
-import { getUsers, User, useUsers } from '../../hooks/useUsers';
+import { User, useUsers } from '../../hooks/useUsers';
 
 import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
@@ -12,16 +12,9 @@ import { Pagination } from '../../components/Pagination';
 import { queryClient } from '../../services/queryClient';
 import { api } from '../../services/api';
 
-interface Props {
-  users: User[];
-  totalCount: number;
-}
-
-const UsersList: NextPage<Props> = ({ users, totalCount }) => {
+const UsersList: NextPage = () => {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching, error } = useUsers(page, {
-    initialData: { users, totalCount }
-  });
+  const { data, isLoading, isFetching, error } = useUsers(page);
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -37,6 +30,8 @@ const UsersList: NextPage<Props> = ({ users, totalCount }) => {
       staleTime: 1000 * 60 * 10, //10 minutos
     })
   };
+
+  // console.log(data?.users);
 
   return (
     <Box>
@@ -118,7 +113,7 @@ const UsersList: NextPage<Props> = ({ users, totalCount }) => {
                           <Text fontSize="sm" color="gray.300">{user.email}</Text>
                         </Box>
                       </Td>
-                      {isWideVersion && <Td>{user.createdAt}</Td>}
+                      {isWideVersion && <Td>{user.created_at}</Td>}
                       {isWideVersion && (
                         <Td>
                           <Button
@@ -148,17 +143,6 @@ const UsersList: NextPage<Props> = ({ users, totalCount }) => {
       </Flex>
     </Box>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { users, totalCount } = await getUsers(1);
-
-  return {
-    props: {
-      users,
-      totalCount,
-    }
-  }
 };
 
 export default UsersList;
