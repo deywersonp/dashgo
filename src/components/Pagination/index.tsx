@@ -49,7 +49,10 @@ export const Pagination = ({
         -
         {' '}
         <strong>
-          {registersPerPage * currentPage}
+          {currentPage === lastPage
+            ? totalCountOfRegisters
+            : registersPerPage * currentPage
+          }
         </strong>
         {' '}
         de
